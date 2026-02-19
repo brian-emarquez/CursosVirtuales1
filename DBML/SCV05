@@ -1,0 +1,201 @@
+/* 
+    Titulo: Sistema de Cursos virtuales (SVC04)
+    Autor: Brian Marquez
+    Fecha de Creación: 22-11-2024 ✔️
+    Fecha de Ultima Modificación: 09-11-2024 
+    Descripción: creacion de modelo logico
+    Resumen de cambios: se cambio el idioma
+*/ 
+
+/*****************************
+  TABLAS DEL SISTEMA SCV
+*****************************/
+
+//Tabla de Log de Errores
+Table sysdLog {
+  id_log int [pk, increment]  // PRIMARY KEY
+  cMsgErr varchar  // mensage de erro
+  cCodUsu char(4)  // usuario que reliza el cambio
+  tModifi datetime // fecha de moficacion
+}
+
+//tablas Codigos del las tablas (systcre)
+Table systCod {
+  id_cod int [pk, increment]   // PRIMARY KEY
+  cOrden char(3)    // ORDEN DE LOS ELEMENTOS POR TABLA                                  
+  cTblFld char(25)  // TABLA Y CAMPO QUE AFECTA                                         
+  cTipReg char(1)   // TIPO DE REGISTRO O DATO DE LA TABLA                              
+  cCodigo char(8)   // CODIGO DE CLASIFICACION                                          
+  cDescri char(70)  // DESCRIPCION                                                      
+  cCodUsu char(4)   // CODIGO DE USUARIO                                                
+  tModifi datetime  // FECHA DE MODIFICACION DE REGISTRO                                
+}
+
+//Nombres de las tablas
+Table sysTab {
+  id_tabla int [pk, increment]    // PRIMARY KEY
+  cTabNom char(20)     // NOMBRE DE LA TABLA
+  cTabDes char(250)     // DESCRIPCION DE LA TABLA                                          
+  cCodUsu char(4)      // DESCRIPCION DE LA TABLA                                          
+  tModifi datetime     // FECHA DE LA MODIFICACION                                         
+}
+
+
+/*****************************
+TABLAS DE SCV
+*****************************/
+
+// TABLA DE USUARIOS
+Table tblUsuarios {
+  id_usuario int [pk, increment]      // PRIMARY KEY
+  cCodUsu char(4)          // CODIGO DE USUARIO                                                 
+  cNomUsu varchar(80)      // NOMBRE DE USUARIO                                                
+  cClave char(128)         // CLAVE DE USUARIO   
+  cnudoci  int             // NUMERO DE DOCUMENTO CIVIL                                                                        
+  cEstado varchar          // ESTADO                                                           
+  cNivUsu char(1)          // NIVEL DE USUARIO                                                  
+  tModifi datetime         // FECHA DE LA MODIFICACION
+  cMail varchar            // CORREO ELECTRÓNICO                                               
+  cRol varchar             // TIPO DE USUARIO
+  cIdeUsu varchar(32)      // IDENTIFICADOR DE USUARIO
+  id_rol int [ref: > tblRoles.id_rol]
+  id_pais int [ref: > tblPaises.id]
+}
+
+// TABLA DE ROLES
+Table tblRoles {
+  id_rol int [pk, increment]         // PRIMARY KEY
+  cnomRol varchar         // NOMBRE DEL ROL
+  tModifi datetime        // FECHA DE LA MODIFICACION
+}
+
+// TABLA DE INSCRIPCIONES
+Table tblInscripciones {
+  id_inscripcion int [pk]   // PRIMARY KEY
+  id_usuario int [ref: > tblUsuarios.id_usuario]
+  id_curso int [ref: > tblCursos.id_curso]
+  tFechaMod datetime    // FECHA DE MODIFICACION
+  cEstado varchar       // ESTADO DE INSCRPCIONES
+}
+
+// TABLA DE CURSOS
+Table tblCursos {
+  id_curso int [pk, increment]      // PRIMARY KEY
+  CnomCur varchar   // NOMBRE DEL CURSO
+  cDescri varchar (300)   // DESCRIPCION DE CURSO
+  cEstado varchar (2)      // ESTADO DE  CURSOS
+
+}
+
+// TABLA DE MODULO
+Table tblModulos {
+  modulos_id integer [pk, increment]   // PRIMARY KEY
+  curso_id varchar
+  cTitulo varchar (120)   // TITULO DEL MODULO
+  cDescri varchar (120)   // DESCRIPCION DE CURSO
+  tModifi datetime        // FECHA DE LA MODIFICACION
+  id_curso int
+}
+
+// TABLA EVALUACIONES
+Table tblEvaluaciones {
+  id_evaluacion int [pk, increment]   // PRIMARY KEY
+  cTipEval varchar         // TIPO DE EVALUACION
+  tModifi datetime         // FECHA DE LA MODIFICACION
+  id_modulos int
+}
+
+// TABLA CALIFICACIONES
+Table tblCalificaciones {
+  id_calificacion int [pk, increment]  // PRIMARY KEY
+  id_usuario int [ref: > tblUsuarios.id_usuario]
+  id_evaluacion int [ref: > tblEvaluaciones.id_evaluacion]
+  cCAlific decimal      // CALIFICACION DEL USUARIO
+  tModifi datetime      // FECHA DE LA MODIFICACION
+}
+
+/*****************************
+INTELIGENCIA ARTIFICAL
+*****************************/
+
+// TABLA RESPUESTAS
+Table tblRespuestas {
+    id_respuesta INT [pk, increment]   // PRIMARY KEY
+    id_evaluacion INT 
+    id_usuario INT 
+    cRespuesta TEXT       // RESPUESTAS
+    tFecRes  DATETIME    // Fecha de respuesta
+}
+
+// TABLA RESULTADOS
+Table tblResultados {
+    id_resultado INT [pk, increment]
+    id_evaluacion int
+    id_usuario int
+    nPuntuacion FLOAT    // PUNTUACION OBTENIDA
+    tFecResult DATETIME  // FECHA DE RESULTADO
+}
+
+// TABLA FEEBACK
+Table tblFeedback {
+    id_feedback INT [pk, increment]
+    id_respuesta INT 
+    cComenta TEXT       // COMENTARIO
+    tModifi datetime    // FECHA DE LA MODIFICACION
+}
+
+Ref: "tblEvaluaciones"."id_evaluacion" < "tblRespuestas"."id_evaluacion"
+
+/*****************************
+UBIGEO
+*****************************/
+
+
+// TABLA DE PAISES (MAESTRO)
+Table tblPaises {
+  id int [pk, increment]   // PRIMARY KEY
+  cNomPais varchar(255)    // NOMBRE DEL PAIS
+  cZona varchar(255)       // ZONA  HORARIA
+  tModifi datetime        // FECHA DE LA MODIFICACION
+}
+
+//TABLA DE DEPARTAMENTOS
+Table tblDepartamentos {
+  id int [pk, increment]   // PRIMARY KEY
+  CnomDepa varchar(255)
+  pais_id int [ref: > tblPaises.id]
+}
+
+//TABLA DE PROVINCIAS
+Table tblProvincias {
+  id int [pk, increment]   // PRIMARY KEY
+  CnomProv varchar(255)
+  departamento_id int [ref: > tblDepartamentos.id]
+}
+
+//TABLA DE DISTRITOS
+Table tblDistritos {
+  id int [pk, increment]   // PRIMARY KEY
+  CnomDist varchar(255)
+  provincia_id int [ref: > tblProvincias.id]
+}
+
+/*******/
+
+Ref: "tblCursos"."id_curso" < "tblModulos"."id_curso"
+
+Ref: "tblModulos"."modulos_id" < "tblEvaluaciones"."id_modulos"
+
+/**/
+
+Ref: "tblUsuarios"."id_usuario" < "tblRespuestas"."id_usuario"
+
+Ref: "tblEvaluaciones"."id_evaluacion" < "tblResultados"."id_evaluacion"
+
+Ref: "tblUsuarios"."id_usuario" < "tblResultados"."id_usuario"
+
+
+Ref: "tblRespuestas"."id_respuesta" < "tblFeedback"."id_respuesta"
+
+
+
