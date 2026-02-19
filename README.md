@@ -139,6 +139,17 @@ Este proyecto está bajo la licencia especificada en el archivo [LICENCE](./LICE
 - Asegúrese de crear respaldos antes de ejecutar scripts en producción
 - Consulte el CHANGELOG para ver historial de cambios y versiones anteriores
 
+
+## Docker
+
+```bash
+docker ps                # ver contenedores
+docker images            # ver imágenes
+docker compose up -d     # levantar
+docker compose down      # bajar
+docker logs <container>  # ver logs
+```
+
 ---
 
 **Última actualización**: Febrero 2026
